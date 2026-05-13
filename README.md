@@ -1,4 +1,4 @@
-# 🖥️ Windows Server 2025 – Enterprise Infrastructure Lab
+# 🖥️ Windows Server 2025 –  Lab Project
 
 ![Windows Server 2025](https://img.shields.io/badge/Windows%20Server-2025-0078D4?style=flat-square&logo=windows&logoColor=white)
 ![Active Directory](https://img.shields.io/badge/Active%20Directory-Domain%20Services-0078D4?style=flat-square&logo=microsoft&logoColor=white)
@@ -156,7 +156,7 @@ manage-bde -status F:
 
 ## 🌍 About This Project
 
-This project was completed as the **final exam (Abschlussprojekt)** of a Windows Server 2025 course.  
+This project was completed as the **final project (Abschlussprojekt)** of a Windows Server 2025 course.  
 The goal was to simulate a realistic IT infrastructure deployment for a small Austrian company,  
 covering all major Windows Server administration topics in a hands-on lab environment.
 
