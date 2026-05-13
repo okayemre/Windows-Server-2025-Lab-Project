@@ -114,20 +114,130 @@ windows-server-2025-final-project/
 ## 🖼️ Screenshots
 
 ### A1 – Active Directory Structure
-> OU hierarchy, user accounts and group memberships
+<details>
+<summary>View screenshots</summary>
+
+![A1.1](screenshots/A1-active-directory/A1.1.png)
+![A1.2](screenshots/A1-active-directory/A1.2.png)
+
+</details>
+
+### A2 – NTFS & Share Permissions
+<details>
+<summary>View screenshots</summary>
+
+![A2.1](screenshots/A2-ntfs-permissions/A2.1.png)
+![A2.2](screenshots/A2-ntfs-permissions/A2.2.png)
+![A2.3](screenshots/A2-ntfs-permissions/A2.3.png)
+
+</details>
+
+### A3 – GPO Desktop Wallpaper
+<details>
+<summary>View screenshots</summary>
+
+![A3.1](screenshots/A3-gpo-wallpaper/A3.1.png)
+![A3.2](screenshots/A3-gpo-wallpaper/A3.2.png)
+
+</details>
 
 ### A4 – Storage Spaces / Mirror Pool
-> Storage pool with 2 physical disks, VDisk-Mirror layout
+<details>
+<summary>View screenshots</summary>
+
+![A4.1](screenshots/A4-storage-spaces/A4.1.png)
+
+</details>
+
+### A5 – BitLocker & EFS
+<details>
+<summary>View screenshots</summary>
+
+![A5.1](screenshots/A5-bitlocker-efs/A5.1.png)
+
+</details>
 
 ### A6 – Data Deduplication
-> 79% savings rate achieved on Mirror-Data (E:\)
+<details>
+<summary>View screenshots</summary>
 
-### A13 – Failover Cluster
-> TW-CLUSTER with iSCSI shared storage – failover test: CL1 offline, role moved to CL2
+![A6.1](screenshots/A6-deduplication/A6.1.png)
+![A6.2](screenshots/A6-deduplication/A6.2.png)
+
+</details>
+
+### A7 – FSRM Quota
+<details>
+<summary>View screenshots</summary>
+
+![A7.1](screenshots/A7-fsrm-quota/A7.1.png)
+
+</details>
+
+### A8 – IIS Intranet Website
+<details>
+<summary>View screenshots</summary>
+
+![A8.1](screenshots/A8-iis-intranet/A8.1.png)
+![A8.2](screenshots/A8-iis-intranet/A8.2.png)
+
+</details>
+
+### A9 – Remote Desktop Services
+<details>
+<summary>View screenshots</summary>
+
+![A9.1](screenshots/A9-rds/A9.1.png)
+![A9.2](screenshots/A9-rds/A9.2.png)
+
+</details>
+
+### A10 – Print Server
+<details>
+<summary>View screenshots</summary>
+
+![A10.1](screenshots/A10-print-server/A10.1.png)
+![A10.2](screenshots/A10-print-server/A10.2.png)
+
+</details>
+
+### A11 – Windows Admin Center
+<details>
+<summary>View screenshots</summary>
+
+![A11.1](screenshots/A11-wac/A11.1.png)
+![A11.2](screenshots/A11-wac/A11.2.png)
+![A11.3](screenshots/A11-wac/A11.3.png)
+
+</details>
+
+### A12 – Windows Server Backup
+<details>
+<summary>View screenshots</summary>
+
+![A12.1](screenshots/A12-backup/A12.1.png)
+
+</details>
+
+### A13 ⭐ – Failover Cluster (Bonus)
+<details>
+<summary>View screenshots</summary>
+
+![A13.1](screenshots/A13-failover-cluster/A13.1.png)
+![A13.2](screenshots/A13-failover-cluster/A13.2.png)
+![A13.3](screenshots/A13-failover-cluster/A13.3.png)
+![A13.4](screenshots/A13-failover-cluster/A13.4.png)
+![A13.5](screenshots/A13-failover-cluster/A13.5.png)
+![A13.6](screenshots/A13-failover-cluster/A13.6.png)
+
+</details>
 
 ---
 
 ## 📜 Key PowerShell Commands
+
+<details>
+<summary>A1 – Active Directory</summary>
 
 ```powershell
 # View AD users and group memberships
@@ -140,19 +250,124 @@ Get-ADUser -Filter * -Properties MemberOf | Where-Object {
     }
 } | Format-Table -AutoSize
 
-# Check Data Deduplication status
-Get-DedupStatus | Format-List
+# List all OUs
+Get-ADOrganizationalUnit -Filter * | Select-Object Name, DistinguishedName | Format-Table -AutoSize
 
-# Check FSRM Quota
-Get-FSRMQuota -Path "D:\Freigaben\Buchhaltung" | Format-List
-
-# Check Failover Cluster nodes
-Get-ClusterNode
-
-# Check BitLocker status
-manage-bde -status F:
+# List all security groups
+Get-ADGroup -Filter * | Select-Object Name, GroupScope | Format-Table -AutoSize
 ```
 
+</details>
+
+<details>
+<summary>A2 – NTFS Permissions</summary>
+
+```powershell
+# View NTFS permissions for all Freigaben folders
+$folders = @("Geschaeftsfuehrung","IT","Buchhaltung","Alle")
+foreach ($folder in $folders) {
+    $path = "D:\Freigaben\$folder"
+    Write-Host "`n========== $folder ==========" -ForegroundColor Cyan
+    (Get-Acl $path).Access |
+        Where-Object { $_.IdentityReference -notmatch "SYSTEM|CREATOR|Administrators" } |
+        Select-Object @{N="Group";E={$_.IdentityReference}},
+                      @{N="Permission";E={$_.FileSystemRights}},
+                      @{N="Type";E={$_.AccessControlType}} |
+        Format-Table -AutoSize
+}
+
+# List all network shares
+Get-SmbShare | Select-Object Name, Path | Format-Table -AutoSize
+```
+
+</details>
+
+<details>
+<summary>A4 – Storage Spaces</summary>
+
+```powershell
+# Check storage pool
+Get-StoragePool | Format-List FriendlyName, OperationalStatus, Size
+
+# Check virtual disk
+Get-VirtualDisk | Format-List FriendlyName, ResiliencySettingName, OperationalStatus
+
+# Check volume
+Get-Volume | Where-Object {$_.DriveLetter -eq "E"} | Format-List
+```
+
+</details>
+
+<details>
+<summary>A5 – BitLocker & EFS</summary>
+
+```powershell
+# Check BitLocker status
+manage-bde -status F:
+
+# Check EFS encrypted files
+cipher /u /n
+```
+
+</details>
+
+<details>
+<summary>A6 – Data Deduplication</summary>
+
+```powershell
+# Run manual deduplication job
+Start-DedupJob -Volume 'E:' -Type Optimization
+
+# Check deduplication status
+Get-DedupStatus | Format-List Volume, SavingsRate, SavedSpace, OptimizedFilesCount
+```
+
+</details>
+
+<details>
+<summary>A7 – FSRM Quota</summary>
+
+```powershell
+# Check quota status
+Get-FSRMQuota -Path "D:\Freigaben\Buchhaltung" | Format-List
+
+# List all quota templates
+Get-FSRMQuotaTemplate | Select-Object Name, Size, SoftLimit | Format-Table -AutoSize
+```
+
+</details>
+
+<details>
+<summary>A12 – Windows Server Backup</summary>
+
+```powershell
+# Check backup job status
+Get-WBJob -Previous 5
+
+# Check backup policy
+Get-WBPolicy
+```
+
+</details>
+
+<details>
+<summary>A13 – Failover Cluster</summary>
+
+```powershell
+# Check cluster nodes
+Get-ClusterNode | Select-Object Name, State | Format-Table -AutoSize
+
+# Check cluster roles
+Get-ClusterGroup | Select-Object Name, State, OwnerNode | Format-Table -AutoSize
+
+# Check cluster shared volumes
+Get-ClusterSharedVolume | Format-List
+
+# Check iSCSI target (on TW-STOR1)
+Get-IscsiServerTarget | Select-Object TargetName, Status, InitiatorIds
+```
+
+</details>
 ---
 
 ## 🌍 About This Project
