@@ -38,6 +38,7 @@ VMware NAT Network: 192.168.100.0/24
 ├── TW-CL2         192.168.100.22   Failover Cluster Node 2
 └── TW-STOR1       192.168.100.30   iSCSI Shared Storage
 ```
+![Network Diagram](architecture/network-diagram.svg)
 
 ---
 
