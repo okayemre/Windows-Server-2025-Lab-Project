@@ -24,7 +24,7 @@ All tasks were completed on **Windows Server 2025** running inside **VMware Work
 | ⚙️ Hypervisor | VMware Workstation Pro 25 |
 | 🪟 Guest OS | Windows Server 2025 Standard Evaluation |
 | 📅 Completed | May 2026 |
-
+| 📋 Project Requirements | [View Tasks →](TASKS.pdf) |
 ---
 
 ## 🏗️ Lab Architecture
